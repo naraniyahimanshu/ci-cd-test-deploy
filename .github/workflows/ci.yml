@@ -1,29 +1,22 @@
-name: CI
+name: CI/CD
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check index.html
-        run: test -f index.html
-
-      - name: Check CSS
-        run: test -f css/style.css
-
-      - name: Check JavaScript
-        run: test -f js/main.js
-
-      - name: CI Success
-        run: echo "CI pipeline completed successfully!"
+      - name: Deploy to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
