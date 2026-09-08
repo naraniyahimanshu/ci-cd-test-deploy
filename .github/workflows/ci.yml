@@ -5,8 +5,35 @@ on:
     branches:
       - main
 
+  pull_request:
+    branches:
+      - main
+
 jobs:
+  test:
+    name: CI Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check index.html
+        run: test -f index.html
+
+      - name: Check CSS
+        run: test -f css/style.css
+
+      - name: Check JavaScript
+        run: test -f js/main.js
+
+      - name: CI Success
+        run: echo "CI pipeline passed!"
+
   deploy:
+    name: Deploy to cPanel
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
